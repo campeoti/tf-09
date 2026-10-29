@@ -211,3 +211,27 @@ class Atalho(Item):
     # que fala em "arquivo", por uma que fala em "atalho".
     def _receber(self, item):
         raise ValueError(self.nome + " é um atalho, não pode conter itens")
+
+
+disco = Pasta("C:")
+usuarios = Pasta("Users", disco)
+rodrigo = Pasta("RodrigoCampeoti", usuarios)
+desktop = Pasta("Desktop", rodrigo)
+faculdade = Pasta("Faculdade", rodrigo)
+trabalhos = Pasta("Trabalhos", faculdade)
+anotacoes = Arquivo("anotacoes.txt", 300, faculdade)
+tf = Arquivo("tf-09.py", 2500, trabalhos)
+boletim = Arquivo("boletim.pdf", 7000, trabalhos)
+
+atalho_tf = Atalho("tf-09 - atalho", tf, desktop)
+atalho_trabalhos = Atalho("Trabalhos - atalho", trabalhos, desktop)
+
+disco.mostrar()
+
+lixeira = Lixeira()
+lixeira.descartar(Arquivo("versao_antiga.py", 1200))
+print(espaco_total([anotacoes, desktop, lixeira]))   # 300 + 2 + 1200 = 1502
+
+tentar("atalho_tf.destino = boletim", lambda: setattr(atalho_tf, "destino", boletim))
+tentar("atalho para si mesmo", lambda: atalho_tf.redirecionar(atalho_tf))
+tentar("atalho para a propria pasta", lambda: atalho_trabalhos.redirecionar(desktop))
