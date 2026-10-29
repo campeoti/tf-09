@@ -1,6 +1,7 @@
 # tf-09 - Atalho na árvore de arquivos
 
-- **Encapsulamento:** quem usa o Atalho só precisa saber ler `destino` e chamar `redirecionar()`; o atributo `__destino` e a validação que impede apontar para ele mesmo ou para uma pasta acima dele ficam escondidos dentro da classe.
-- **Herança:** a interface é a mesma de qualquer Item (`nome`, `pai`, `mover_para()`, `caminho()`); a implementação disso tudo fica no Item, e o Atalho só herda, sem reescrever nada.
-- **Polimorfismo:** quem chama só pede `tamanho()` e `mostrar()`, sem perguntar o tipo; por baixo o Atalho responde 1 byte e imprime `nome -> caminho do destino`, enquanto Pasta e Arquivo respondem do jeito deles.
-- Por isso o `espaco_total()` aceita o Atalho sem mudar uma linha: ele conhece só o contrato do `Medivel`, não a implementação.
+Encapsulamento: quem usa o Atalho só precisa ler o `destino` e chamar `redirecionar()`. O atributo `__destino` e a checagem que impede apontar para ele mesmo ou para uma pasta acima dele ficam dentro da classe.
+
+Herança: o Atalho usa `nome`, `pai`, `mover_para()` e `caminho()` como qualquer Item. Quem implementa isso é o Item, o Atalho só herda e não reescreve nada.
+
+Polimorfismo: quem chama pede `tamanho()` ou `mostrar()` sem saber o tipo do item. O Atalho devolve 1 byte e imprime `nome -> caminho do destino`, enquanto Pasta e Arquivo fazem do jeito deles. Por isso o `espaco_total()` aceitou o Atalho sem eu mudar nada nele.

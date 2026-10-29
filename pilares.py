@@ -163,22 +163,22 @@ def tentar(rotulo, acao):
         print(rotulo, "->", type(erro).__name__ + ":", erro)
 
 
-# O ATALHO é um item da árvore que só aponta para outro item (o destino),
-# como o atalho do Windows ou o link simbólico do Linux. Nome, pai,
-# mover_para e caminho vêm prontos de Item: aqui só entra o que é dele.
+# Atalho: um item da árvore que aponta para outro item (o destino), igual ao
+# atalho do Windows ou ao link simbólico do Linux. Nome, pai, mover_para e
+# caminho já vêm do Item, então aqui só tem o que é do atalho.
 class Atalho(Item):
     __slots__ = ("__destino",)
 
-    # Valida o destino antes de tudo: se der erro, o atalho nem chega a
-    # entrar na pasta pai. A validação é a mesma usada no redirecionar.
+    # Valida o destino primeiro. Se der erro, o atalho nem entra na pasta.
+    # É a mesma validação que o redirecionar usa.
     def __init__(self, nome, destino, pai=None):
         self.__validar_destino(destino, pai)
         self.__destino = destino
         super().__init__(nome, pai)
 
-    # Regra única para qualquer destino: não pode ser o próprio atalho nem
-    # nenhuma pasta acima dele, senão abrir o atalho levaria de volta para
-    # onde ele mesmo está. Sobe de pai em pai comparando com o destino.
+    # O destino não pode ser o próprio atalho nem uma pasta acima dele,
+    # porque aí o atalho ia apontar pra onde ele mesmo está.
+    # Sobe de pai em pai comparando cada um com o destino.
     def __validar_destino(self, destino, pai):
         if destino is self:
             raise ValueError("um atalho não pode apontar para ele mesmo")
@@ -188,27 +188,27 @@ class Atalho(Item):
                 raise ValueError("o atalho não pode apontar para " + destino.nome + ", que é uma pasta acima dele")
             ancestral = ancestral.pai
 
-    # Só leitura: não existe setter, então atalho.destino = x dá erro.
+    # Só leitura. Como não tem setter, atalho.destino = x dá erro.
     @property
     def destino(self):
         return self.__destino
 
-    # Única forma de trocar o destino, sempre passando pela validação.
+    # Único jeito de trocar o destino, sempre passando pela validação.
     def redirecionar(self, novo_destino):
         self.__validar_destino(novo_destino, self.pai)
         self.__destino = novo_destino
 
-    # POLIMORFISMO: o atalho ocupa 1 byte, não importa o tamanho do destino.
+    # O atalho ocupa 1 byte, seja qual for o tamanho do destino.
     def tamanho(self):
         return 1
 
-    # Mostra com o mesmo recuo dos outros itens e indica para onde aponta.
+    # Mostra com o mesmo recuo dos outros itens e para onde o atalho aponta.
     def mostrar(self):
         recuo = "    " * self.profundidade()
         print(recuo + self.nome + " -> " + self.destino.caminho())
 
-    # Atalho não guarda itens dentro dele: troca a mensagem padrão de Item,
-    # que fala em "arquivo", por uma que fala em "atalho".
+    # Atalho não guarda itens. A mensagem do Item fala em "arquivo",
+    # então troquei por uma que fala em "atalho".
     def _receber(self, item):
         raise ValueError(self.nome + " é um atalho, não pode conter itens")
 
